@@ -13,7 +13,7 @@ def create_elipse(x, y, height, width, color, image):
     image = cv2.ellipse(image, center_coordinates, axes_length, angle, start_angle, end_angle, color, thickness)
     return image
 
-
+# test
 def create_triangle(x, y, height, width, color, image):
     pt1 = (150, 100)
     pt2 = (100, 200)
