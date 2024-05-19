@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import os
 
 
 def create_elipse(x, y, height, width, color, image):
@@ -30,7 +31,8 @@ def create_triangle(x, y, height, width, color, image):
 
 
 def test_bubble():
-    path = r'.\files\sample.jpg'
+    assert os.path.exists(r'../files/sample.jpg')
+    path = r'../files/sample.jpg'
 
     image = cv2.imread(path)
 
@@ -40,8 +42,8 @@ def test_bubble():
 
     window_name = 'Sample Image'
 
-    image = create_elipse(500, 500, 105, 105, (0, 0, 0), image)
-    image = create_elipse(500, 500, 100, 100, (255, 255, 255), image)
+    image = create_elipse(500, 500, 205, 105, (0, 0, 0), image)
+    image = create_elipse(500, 500, 200, 100, (255, 255, 255), image)
 
     image = create_triangle(500, 500, 100, 100, (0, 255, 0), image)
 
