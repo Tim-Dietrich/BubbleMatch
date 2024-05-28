@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 
-def create_elipse(x, y, height, width, color, image):
+def create_elipse(image, x, y, height, width, color):
     center_coordinates = (x, y)
     axes_length = (height, width)
     angle = 0
@@ -13,6 +13,7 @@ def create_elipse(x, y, height, width, color, image):
     thickness = -1
     image = cv2.ellipse(image, center_coordinates, axes_length, angle, start_angle, end_angle, color, thickness)
     return image
+
 
 # testing!!!
 def create_triangle(x, y, height, width, color, image):
@@ -42,8 +43,8 @@ def test_bubble():
 
     window_name = 'Sample Image'
 
-    image = create_elipse(500, 500, 205, 105, (0, 0, 0), image)
-    image = create_elipse(500, 500, 200, 100, (255, 255, 255), image)
+    image = create_elipse(image, 500, 500, 205, 105, (0, 0, 0))
+    image = create_elipse(image, 500, 500, 200, 100, (255, 255, 255))
 
     image = create_triangle(500, 500, 100, 100, (0, 255, 0), image)
 
