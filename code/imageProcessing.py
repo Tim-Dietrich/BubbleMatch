@@ -45,10 +45,8 @@ def add_ellipsis_and_save(image, path, idx, f):
     max_h = image_height - y
 
     # define width and height
-    w = 100
-    h = 200
-    # w = random.randint(50, max_w)
-    # h = random.randint(50, max_h)
+    w = random.randint(50, max_w)
+    h = random.randint(50, max_h)
 
     # modify image and create ellipses
     copy = image.copy()
