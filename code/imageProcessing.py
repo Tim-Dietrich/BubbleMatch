@@ -3,7 +3,7 @@ import cv2
 import random
 from sampleBubble import create_elipse
 import json
-
+from datasetPreparation import create_xml
 
 def image_generation_test():
     # get image TODO: replace with parameters
@@ -57,6 +57,17 @@ def add_ellipsis_and_save(image, path, idx, f):
     # write to file
     file_name = str(idx) + '.jpg'
     cv2.imwrite(path + file_name, copy)
+
+    # calculate box coordinates for xml generation
+    coordinates = []
+    bubble_type = 'speech_bubble'
+    xmin = max(0, x-w//2)
+    ymin = max(0, y-h//2)
+    xmax = min(image_width, x+w//2)
+    ymax = min(image_height, y+h//2)
+    coordinates.append([bubble_type, xmin, ymin, xmax, ymax])
+
+    create_xml(path=path, img=str(idx), width=image_width, height=image_height, boxes=coordinates)
 
     # add annotation to text file
     annotation = {
