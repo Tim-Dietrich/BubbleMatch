@@ -60,5 +60,6 @@ def create_xml(path, img, width, height, boxes) -> None:
 
     with open(save_path_file, "w") as f:
         f.write(xml_str)
+        f.close()
 
     return None
