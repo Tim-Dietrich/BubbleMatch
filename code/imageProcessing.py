@@ -54,6 +54,8 @@ def add_ellipsis_and_save(image, path, idx, f):
     copy = create_elipse(copy, x, y, w+outline_thickness, h+outline_thickness, (0, 0, 0))
     copy = create_elipse(copy, x, y, w, h, (255, 255, 255))
 
+    # test comment
+
     # write to file
     file_name = str(idx) + '.jpg'
     cv2.imwrite(path + file_name, copy)
