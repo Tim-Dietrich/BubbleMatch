@@ -16,7 +16,7 @@ def image_generation_test():
         os.makedirs(path)
     cv2.imwrite(path + 'image_original.jpg', image)
 
-    generate_data(image)
+    generate_data(image, path)
 
     # generate and save bubble versions
     # generated_images_per_source = 5

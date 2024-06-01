@@ -6,11 +6,12 @@ from PIL import Image, ImageFont, ImageDraw
 
 from BubbleMatch import imageProcessing, parameters
 from BubbleMatch.Bubble import Bubble
+from BubbleMatch.datasetPreparation import create_xml
 from BubbleMatch.sampleBubble import create_elipse
 
 
 # Generates all bubble images from a provided source image
-def generate_data(source_image):
+def generate_data(source_image, path):
     print(source_image.shape)
     generated_images_per_source = 10
     generated_images = []
@@ -18,10 +19,11 @@ def generate_data(source_image):
     # apply manga filter to source image
     source_image = imageProcessing.manga_filter(source_image)
 
-    for i in range(generated_images_per_source):
-        # INFO: change this for normal distribution or whatever suits us
+    # iterate and create bubble images
+    for index in range(generated_images_per_source):
+        # TODO: change this to a normal distribution or whatever suits us better
         bubble_count = random.randrange(1, 3)
-        generated_images.append(generate_bubble_image(source_image, bubble_count))
+        generated_images.append(generate_bubble_image(source_image, bubble_count, index, path))
 
     for img in generated_images:
         cv2.imshow("img", img)
@@ -33,7 +35,7 @@ def generate_data(source_image):
 
 # Takes a given source image and adds bubbles to it
 # returns the modified image
-def generate_bubble_image(source_image, bubble_count):
+def generate_bubble_image(source_image, bubble_count, index, path):
     # step 1: create bubbles
     bubbles = []
     for i in range(bubble_count):
@@ -41,40 +43,65 @@ def generate_bubble_image(source_image, bubble_count):
         width = random.randrange(int(height * 0.1), int(height * 0.75))
         x = random.randrange(0 + width, source_image.shape[1] - width)
         y = random.randrange(0 + height, source_image.shape[0] - height)
-        bubbles.append(Bubble(x, y, width, height))
+        border_thickness = random.randrange(3, 7)
+        bubbles.append(Bubble(x, y, width, height, border_thickness))
 
     # create new copy
-    copy = source_image.copy()
+    modified_image = source_image.copy()
 
     # step 2: Add black bubbles
     for bubble in bubbles:
         # draw black background for borders
-        border_thickness = random.randrange(3, 7)
-        copy = create_elipse(copy,
-                             bubble.x,
-                             bubble.y,
-                             bubble.height + border_thickness,
-                             bubble.width + border_thickness,
-                             parameters.ELLIPSE_BORDER_COLOR
-                             )
+
+        modified_image = create_elipse(
+            modified_image,
+            bubble.x,
+            bubble.y,
+            bubble.height + bubble.border_thickness,
+            bubble.width + bubble.border_thickness,
+            parameters.ELLIPSE_BORDER_COLOR
+            )
 
     # step 3: Add white bubbles
     for bubble in bubbles:
         # draw white inside
-        copy = create_elipse(copy, bubble.x, bubble.y, bubble.height, bubble.width, parameters.ELLIPSE_INSIDE_COLOR)
+        modified_image = create_elipse(modified_image, bubble.x, bubble.y, bubble.height, bubble.width, parameters.ELLIPSE_INSIDE_COLOR)
         print("Bubble data: " + str(bubble))
 
     # step 4: Add text
     for bubble in bubbles:
         coordinates = (bubble.x - bubble.width / 2, bubble.y - bubble.height + 5)
         fontsize = random.randint(15, 45)
-        copy = write_text(copy, coordinates, bubble.height, fontsize)
+        modified_image = write_text(modified_image, coordinates, bubble.height, fontsize)
+
+    # step 5: create XML for tensorflow
+    write_to_xml(modified_image, bubbles, index, path)
+
+    # step 6: write images to path
+    file_name = str(index) + '.jpg'
+    cv2.imwrite(path + file_name, modified_image)
 
     # return the result
-    return copy
+    return modified_image
+
+
+def write_to_xml(image, bubbles, index, path):
+    # calculate box coordinates for xml generation
+    coordinates = []
+    bubble_type = 'speech_bubble'
+    for bubble in bubbles:
+        x_min = max(0, bubble.x - bubble.width - bubble.border_thickness)
+        y_min = max(0, bubble.y - bubble.height - bubble.border_thickness)
+        x_max = min(image.shape[1], bubble.x + bubble.width + bubble.border_thickness)
+        y_max = min(image.shape[0], bubble.y + bubble.height + bubble.border_thickness)
+        coordinates.append([bubble_type, x_min, y_min, x_max, y_max])
+
+    create_xml(path=path, img=str(index), width=image.shape[1], height=image.shape[0], boxes=coordinates)
 
 
 # Write text onto the given image. This uses PIL instead of OpenCV
+# TODO: multi-line text for wider bubbles, reduce fontsize on bubbles that are too small
+# WARNING: turn 'bubble' into a parameter instead of passing single values
 def write_text(image, coordinates, height, fontsize):
     # get text
     excerpt = fetch_random_excerpt(50)
