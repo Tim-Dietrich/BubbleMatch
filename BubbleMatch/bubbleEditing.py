@@ -66,17 +66,18 @@ def generate_bubble_image(source_image, bubble_count):
 
     # step 4: Add text
     for bubble in bubbles:
-        coordinates = (bubble.x, bubble.y)
-        copy = write_text(copy, coordinates)
+        coordinates = (bubble.x - bubble.width / 2, bubble.y - bubble.height + 5)
+        fontsize = random.randint(15, 45)
+        copy = write_text(copy, coordinates, bubble.height, fontsize)
 
     # return the result
     return copy
 
 
 # Write text onto the given image. This uses PIL instead of OpenCV
-def write_text(image, coordinates):
+def write_text(image, coordinates, height, fontsize):
     # get text
-    excerpt = fetch_random_excerpt(5)
+    excerpt = fetch_random_excerpt(50)
     print(excerpt)
     # create PIL image
     # image = np.zeros((100, 950, 3), dtype=np.uint8)
@@ -84,9 +85,17 @@ def write_text(image, coordinates):
     pil_image = Image.fromarray(image)
 
     # Draw non-ascii text onto image
-    font = ImageFont.truetype("C:\\Windows\\Fonts\\YuGothB.ttc", 35)
+    font = ImageFont.truetype("C:\\Windows\\Fonts\\YuGothB.ttc", fontsize)
     draw = ImageDraw.Draw(pil_image)
-    draw.text(coordinates, excerpt, fill=(255, 0, 0), stroke_fill=10, font=font)
+
+    # iterate over excerpt and add characters vertically
+    x = 0
+    for character in excerpt:
+        print(character, coordinates, x, coordinates[1] - x)
+        draw.text((coordinates[0], coordinates[1] + x), character, fill=(0, 0, 0), stroke_fill=10, font=font)
+        x = x + fontsize
+        if x > height * 2 - fontsize:
+            break
 
     image = np.asarray(pil_image)
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
