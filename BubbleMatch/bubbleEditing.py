@@ -1,5 +1,8 @@
 import random
 import cv2
+import numpy as np
+
+from PIL import Image, ImageFont, ImageDraw
 
 from BubbleMatch import imageProcessing, parameters
 from BubbleMatch.Bubble import Bubble
@@ -62,7 +65,41 @@ def generate_bubble_image(source_image, bubble_count):
         print("Bubble data: " + str(bubble))
 
     # step 4: Add text
-
+    for bubble in bubbles:
+        coordinates = (bubble.x, bubble.y)
+        copy = write_text(copy, coordinates)
 
     # return the result
     return copy
+
+
+# Write text onto the given image. This uses PIL instead of OpenCV
+def write_text(image, coordinates):
+    # get text
+    excerpt = fetch_random_excerpt(5)
+    print(excerpt)
+    # create PIL image
+    # image = np.zeros((100, 950, 3), dtype=np.uint8)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    pil_image = Image.fromarray(image)
+
+    # Draw non-ascii text onto image
+    font = ImageFont.truetype("C:\\Windows\\Fonts\\YuGothB.ttc", 35)
+    draw = ImageDraw.Draw(pil_image)
+    draw.text(coordinates, excerpt, fill=(255, 0, 0), stroke_fill=10, font=font)
+
+    image = np.asarray(pil_image)
+    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+    return image
+
+
+# Gets a random excerpt from the lorem ipsum file
+def fetch_random_excerpt(excerpt_length=100):
+    with open("../resources/lorem_ipsum.txt", 'r', encoding='utf-8') as file:
+        text = file.read()
+
+    if len(text) <= excerpt_length:
+        return text
+
+    start_index = random.randint(0, len(text) - excerpt_length)
+    return text[start_index:start_index + excerpt_length]
