@@ -5,12 +5,13 @@ import os
 
 def create_elipse(image, x, y, height, width, color):
     center_coordinates = (x, y)
-    axes_length = (height, width)
+    axes_length = (width, height)
     angle = 0
     start_angle = 0
     end_angle = 360
     # -1 fills the ellipse
     thickness = -1
+    print(x, y, height, width, color)
     image = cv2.ellipse(image, center_coordinates, axes_length, angle, start_angle, end_angle, color, thickness)
     return image
 

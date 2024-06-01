@@ -1,0 +1,3 @@
+# Color parameters
+ELLIPSE_BORDER_COLOR = (0, 0, 0)
+ELLIPSE_INSIDE_COLOR = (255, 255, 255)
