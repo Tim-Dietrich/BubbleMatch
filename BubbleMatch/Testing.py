@@ -1,6 +1,6 @@
 import os
 import cv2
-from BubbleMatch.bubbleEditing import generate_data
+from BubbleMatch.BubbleEditing import generate_data
 
 
 # All functions for testing purposes only

@@ -4,10 +4,10 @@ import numpy as np
 
 from PIL import Image, ImageFont, ImageDraw
 
-from BubbleMatch import imageProcessing, parameters
+from BubbleMatch import ImageProcessing, Parameters
 from BubbleMatch.Bubble import Bubble
-from BubbleMatch.datasetPreparation import create_xml
-from BubbleMatch.sampleBubble import create_elipse
+from BubbleMatch.DatasetPreparation import create_xml
+from BubbleMatch.ShapeCreator import create_ellipse
 
 
 # Generates all bubble images from a provided source image
@@ -17,7 +17,7 @@ def generate_data(source_image, path):
     generated_images = []
 
     # apply manga filter to source image
-    source_image = imageProcessing.manga_filter(source_image)
+    source_image = ImageProcessing.manga_filter(source_image)
 
     # iterate and create bubble images
     for index in range(generated_images_per_source):
@@ -53,19 +53,19 @@ def generate_bubble_image(source_image, bubble_count, index, path):
     for bubble in bubbles:
         # draw black background for borders
 
-        modified_image = create_elipse(
+        modified_image = create_ellipse(
             modified_image,
             bubble.x,
             bubble.y,
             bubble.height + bubble.border_thickness,
             bubble.width + bubble.border_thickness,
-            parameters.ELLIPSE_BORDER_COLOR
+            Parameters.ELLIPSE_BORDER_COLOR
             )
 
     # step 3: Add white bubbles
     for bubble in bubbles:
         # draw white inside
-        modified_image = create_elipse(modified_image, bubble.x, bubble.y, bubble.height, bubble.width, parameters.ELLIPSE_INSIDE_COLOR)
+        modified_image = create_ellipse(modified_image, bubble.x, bubble.y, bubble.height, bubble.width, Parameters.ELLIPSE_INSIDE_COLOR)
         print("Bubble data: " + str(bubble))
 
     # step 4: Add text

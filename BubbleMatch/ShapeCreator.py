@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 
-def create_elipse(image, x, y, height, width, color):
+def create_ellipse(image, x, y, height, width, color):
     center_coordinates = (x, y)
     axes_length = (width, height)
     angle = 0
@@ -44,8 +44,8 @@ def test_bubble():
 
     window_name = 'Sample Image'
 
-    image = create_elipse(image, 500, 500, 205, 105, (0, 0, 0))
-    image = create_elipse(image, 500, 500, 200, 100, (255, 255, 255))
+    image = create_ellipse(image, 500, 500, 205, 105, (0, 0, 0))
+    image = create_ellipse(image, 500, 500, 200, 100, (255, 255, 255))
 
     image = create_triangle(500, 500, 100, 100, (0, 255, 0), image)
 
