@@ -11,7 +11,7 @@ def create_ellipse(image, x, y, height, width, color):
     end_angle = 360
     # -1 fills the ellipse
     thickness = -1
-    print(x, y, height, width, color)
+    # print(x, y, height, width, color)
     image = cv2.ellipse(image, center_coordinates, axes_length, angle, start_angle, end_angle, color, thickness)
     return image
 
@@ -29,6 +29,11 @@ def create_triangle(x, y, height, width, color, image):
     triangle_cnt = np.array([pt1, pt2, pt3])
 
     image = cv2.drawContours(image, [triangle_cnt], 0, color, -1)
+    return image
+
+
+def create_square(image, x_min, x_max, y_min, y_max, color):
+    image = cv2.rectangle(image, (x_min, y_min), (x_max, y_max), color, -1)
     return image
 
 

@@ -3,7 +3,7 @@ import cv2
 
 # Applies a manga-like filter to an image
 # returns the modified image
-def manga_filter(image, debug_windows=True):
+def manga_filter(image, debug_windows=False):
     # convert to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 

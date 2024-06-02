@@ -1,4 +1,6 @@
 import os
+from os import listdir
+from os.path import isfile, join
 import cv2
 from BubbleMatch.BubbleEditing import generate_data
 
@@ -6,17 +8,22 @@ from BubbleMatch.BubbleEditing import generate_data
 # All functions for testing purposes only
 def image_generation_test():
     # get image TODO: replace with parameters
-    assert os.path.exists(r'../files/image.jpg')
-    image = cv2.imread(r'../files/image.jpg')
+    path = r'../files/input/images'
+    assert os.path.exists(path)
+    only_files = [f for f in listdir(path) if isfile(join(path, f))]
 
-    # create path + write images to disk TODO: parameters
-    image_name = 'sample1'
-    path = r'../files/Output/' + image_name + '/'
-    if not os.path.exists(path):
-        os.makedirs(path)
-    cv2.imwrite(path + 'image_original.jpg', image)
+    for idx, file in enumerate(only_files):
+        curr_path = path + '/' + file
+        image = cv2.imread(curr_path)
 
-    generate_data(image, path)
+        # create path + write images to disk TODO: parameters
+        image_name = file
+        output_path = r'../files/Output/test01/' #+ image_name + '/'
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
+        # cv2.imwrite(output_path + 'image_original.jpg', image)
+
+        generate_data(image, output_path, idx)
 
     # generate and save bubble versions
     # generated_images_per_source = 5

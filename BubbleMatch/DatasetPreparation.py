@@ -1,7 +1,7 @@
 from xml.dom import minidom
 
 
-def create_xml(path, img, width, height, boxes) -> None:
+def create_xml(path, file_index, width, height, boxes) -> None:
     boundaries = ['xmin', 'ymin', 'xmax', 'ymax']
 
     doc = minidom.Document()
@@ -13,7 +13,7 @@ def create_xml(path, img, width, height, boxes) -> None:
     parent.appendChild(child)
 
     child = doc.createElement('filename')
-    child.appendChild(doc.createTextNode(f'{img}'))
+    child.appendChild(doc.createTextNode(f'{file_index}'))
     parent.appendChild(child)
 
     child = doc.createElement('path')
@@ -56,7 +56,7 @@ def create_xml(path, img, width, height, boxes) -> None:
         parent.appendChild(child)
 
     xml_str = doc.toprettyxml(indent="\t")
-    save_path_file = f"{path}{img}.xml"
+    save_path_file = f"{path}{file_index}.xml"
 
     with open(save_path_file, "w") as f:
         f.write(xml_str)
