@@ -1,5 +1,4 @@
 from BubbleMatch.ShapeCreator import create_ellipse
-from BubbleMatch.Parameters import *
 
 
 class Bubble:
@@ -32,7 +31,7 @@ class Bubble:
         )
 
     def get_text_coordinates(self):
-        return self.x - self.width / 2, self.y - self.height + 5
+        return [self.x - self.width / 2, self.y - self.height + 5]
 
     def get_xml_coordinates(self, image):
         x_min = max(0, self.x - self.width - self.border_thickness)

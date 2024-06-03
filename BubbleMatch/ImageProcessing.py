@@ -38,3 +38,15 @@ def manga_filter(image, debug_windows=False):
         cv2.destroyAllWindows()
 
     return morph
+
+
+def manga_filter2(image, debug_windows=True):
+    dst_gray, dst_color = cv2.pencilSketch(image, sigma_s=60, sigma_r=0.07, shade_factor=0.05)
+
+    if debug_windows:
+        cv2.imshow("gray", dst_gray)
+        # cv2.imshow("gray", dst_color)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+    return dst_gray
