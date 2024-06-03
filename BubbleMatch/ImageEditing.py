@@ -18,7 +18,7 @@ def generate_data(source_image, path, idx):
     generated_images = []
 
     # apply manga filter to source image
-    source_image = ImageProcessing.manga_filter2(source_image)
+    source_image = ImageProcessing.manga_filter3(source_image)
 
     # iterate and create bubble images
     for index in range(generated_images_per_source):
@@ -148,13 +148,7 @@ def write_text(image, target_object):
     # calculate fitting fontsize
     fontsize = random.randint(25, 65)
     projected_fontsize = int(fontsize * (1 + ((height * width) / 1000000)))
-    print("projected: ", projected_fontsize)
-    print("actual: ", fontsize)
     fontsize = projected_fontsize
-
-    print(width // fontsize)
-    # if width // fontsize <= 1:
-    #     coordinates[0] += int(fontsize / 2)
 
     # create PIL image
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)

@@ -40,7 +40,7 @@ def manga_filter(image, debug_windows=False):
     return morph
 
 
-def manga_filter2(image, debug_windows=True):
+def manga_filter2(image, debug_windows=False):
     dst_gray, dst_color = cv2.pencilSketch(image, sigma_s=60, sigma_r=0.07, shade_factor=0.05)
 
     if debug_windows:
@@ -50,3 +50,21 @@ def manga_filter2(image, debug_windows=True):
         cv2.destroyAllWindows()
 
     return dst_gray
+
+
+def manga_filter3(img, debug_windows=False):
+    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # inverted grayscale image
+    img_invert = cv2.bitwise_not(gray_img)
+    # Gaussian blur to smooth details
+    img_smoothing = cv2.GaussianBlur(img_invert, (21, 21), sigmaX=0, sigmaY=0)
+    # pencil skectched image using divide
+    final_img = cv2.divide(gray_img, 255 - img_smoothing, scale=256)
+
+    if debug_windows:
+        cv2.imshow("gray", final_img)
+        # cv2.imshow("gray", dst_color)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+    return final_img
