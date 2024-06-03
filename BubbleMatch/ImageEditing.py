@@ -18,7 +18,7 @@ def generate_data(source_image, path, idx):
     generated_images = []
 
     # apply manga filter to source image
-    source_image = ImageProcessing.manga_filter3(source_image)
+    source_image = ImageProcessing.manga_filter4(source_image)
 
     # iterate and create bubble images
     for index in range(generated_images_per_source):
@@ -123,11 +123,9 @@ def write_to_xml(image, bubbles, path, file_index):
 
 
 # Write text onto the given image. This uses PIL instead of OpenCV
-# TODO: multi-line text for wider bubbles, reduce fontsize on bubbles that are too small
-# WARNING: turn 'bubble' into a parameter instead of passing single values
 def write_text(image, target_object):
     # fetch text
-    excerpt = fetch_random_excerpt(200)
+    excerpt = fetch_random_excerpt(500)
 
     # get coordinates
     coordinates = target_object.get_text_coordinates()

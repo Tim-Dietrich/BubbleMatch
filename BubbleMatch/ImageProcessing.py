@@ -1,9 +1,11 @@
 import cv2
 
+from BubbleMatch.Parameters import PROCESSING_DEBUG
+
 
 # Applies a manga-like filter to an image
 # returns the modified image
-def manga_filter(image, debug_windows=False):
+def manga_filter1(image, debug_windows=PROCESSING_DEBUG):
     # convert to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -26,8 +28,6 @@ def manga_filter(image, debug_windows=False):
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
     morph = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
 
-    morph = cv2.cvtColor(morph, cv2.COLOR_GRAY2RGB)
-
     # display it if debug enabled
     if debug_windows:
         cv2.imshow("gray", gray)
@@ -37,23 +37,25 @@ def manga_filter(image, debug_windows=False):
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-    return morph
+    return thresh
 
 
-def manga_filter2(image, debug_windows=False):
+def manga_filter2(image, debug_windows=PROCESSING_DEBUG):
+    # sigma_s and sigma_r are the same as in stylization.
+    # shade_factor is a simple scaling of the output image intensity.
+    # The higher the value, the brighter is the result. Range 0 - 0.1
     dst_gray, dst_color = cv2.pencilSketch(image, sigma_s=60, sigma_r=0.07, shade_factor=0.05)
 
     if debug_windows:
         cv2.imshow("gray", dst_gray)
-        # cv2.imshow("gray", dst_color)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
     return dst_gray
 
 
-def manga_filter3(img, debug_windows=False):
-    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+def manga_filter3(image, debug_windows=PROCESSING_DEBUG):
+    gray_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # inverted grayscale image
     img_invert = cv2.bitwise_not(gray_img)
     # Gaussian blur to smooth details
@@ -63,8 +65,21 @@ def manga_filter3(img, debug_windows=False):
 
     if debug_windows:
         cv2.imshow("gray", final_img)
-        # cv2.imshow("gray", dst_color)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
     return final_img
+
+
+def manga_filter4(image, debug_windows=PROCESSING_DEBUG):
+    im1 = manga_filter1(image, False)
+    im2, _ = cv2.pencilSketch(image, sigma_s=60, sigma_r=0.07, shade_factor=0.05)
+
+    test = cv2.addWeighted(im1, 0.5, im2, 0.5, -0.0)
+
+    if debug_windows:
+        cv2.imshow("gray", test)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+    return test
