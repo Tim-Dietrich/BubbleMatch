@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import os
-
+from BubbleMatch.Parameters import OBJECT_BORDER_COLOR, OBJECT_INSIDE_COLOR
 
 def create_ellipse(image, x, y, height, width, color):
     center_coordinates = (x, y)
@@ -34,6 +34,14 @@ def create_triangle(x, y, height, width, color, image):
 
 def create_square(image, x_min, x_max, y_min, y_max, color):
     image = cv2.rectangle(image, (x_min, y_min), (x_max, y_max), color, -1)
+    return image
+
+
+def create_polygon(image, vertices, color, is_outline, thickness):
+    if color == OBJECT_BORDER_COLOR:
+        image = cv2.polylines(image, [vertices], True, color, thickness)
+    else:
+        image = cv2.fillPoly(image, [vertices], color)
     return image
 
 

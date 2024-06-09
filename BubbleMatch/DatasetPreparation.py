@@ -13,7 +13,7 @@ def create_xml(path, file_index, width, height, boxes) -> None:
     parent.appendChild(child)
 
     child = doc.createElement('filename')
-    child.appendChild(doc.createTextNode(f'{file_index}'))
+    child.appendChild(doc.createTextNode(f'{file_index}.jpg'))
     parent.appendChild(child)
 
     child = doc.createElement('path')

@@ -10,11 +10,12 @@ from BubbleMatch.Objects.Bubble import Bubble
 from BubbleMatch.DatasetPreparation import create_xml
 from BubbleMatch.Objects.Rectangle import Rectangle
 from BubbleMatch.Parameters import OBJECT_TEXT_COLOR
+from BubbleMatch.Objects.Polygon import Polygon
 
 
 # Generates all bubble images from a provided source image
 def generate_data(source_image, path, idx):
-    generated_images_per_source = 10
+    generated_images_per_source = 2
     generated_images = []
 
     # apply manga filter to source image
@@ -66,7 +67,45 @@ def create_objects(source_image, object_count, object_type: int):
                 # print("Square dimensions", x_min, y_min, x_max, y_max)
                 objects.append(Rectangle(x_min, x_max, y_min, y_max, border_thickness))
             case 2:
-                pass
+                # image dimensions
+                image_height = source_image.shape[0]
+                image_width = source_image.shape[1]
+
+                # buffer values to avoid speech bubble out of frame
+                x_buffer = image_width // 10
+                y_buffer = image_height // 10
+
+                # define offsets for position
+                x_offset = random.randint(0, image_width - x_buffer)
+                y_offset = random.randint(0, image_height - y_buffer)
+
+                # define standard polygon
+                base_polygon = np.array(
+                    [[100, 100], [140, 130], [160, 200], [140, 240], [100, 270], [60, 240], [40, 200], [60, 130]],
+                    np.int32)
+
+                # randomize each point
+                for vertex in base_polygon:
+                    vertex[0] = vertex[0] + random.randint(-10, 10) + x_offset
+                    vertex[1] = vertex[1] + random.randint(-10, 10) + y_offset
+
+                # get outer boundaries for labeling
+                x_min = max(int(base_polygon[6][0]), 0)
+                y_min = max(int(base_polygon[0][1]), 0)
+                x_max = min(int(base_polygon[2][0]), image_width)
+                y_max = min(int(base_polygon[4][1]), image_height)
+
+                # get inner boundaries for text
+                inner_x_min = max(int(base_polygon[5][0]), int(base_polygon[7][0]))
+                inner_y_min = max(int(base_polygon[1][1]), int(base_polygon[7][1]))
+                inner_x_max = min(int(base_polygon[1][0]), int(base_polygon[3][0]))
+                inner_y_max = min(int(base_polygon[3][1]), int(base_polygon[5][1]))
+
+                curr_polygon = Polygon(base_polygon, x_min, x_max, y_min, y_max, border_thickness)
+                curr_polygon.set_text_coordinates(inner_x_min, inner_x_max, inner_y_min, inner_y_max)
+
+                objects.append(curr_polygon)
+
     return objects
 
 
@@ -77,7 +116,7 @@ def generate_modified_image(source_image, object_count, index, path, idx):
     # 0 -> Ellipse
     # 1 -> Rectangle
     # 2 -> Polygon
-    object_type = random.randint(0, 1)
+    object_type = random.randint(0, 2)
     objects = create_objects(source_image, object_count, object_type)
 
     # create new copy
