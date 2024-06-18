@@ -1,0 +1,7 @@
+# Color parameters
+OBJECT_BORDER_COLOR = (0, 0, 0)
+OBJECT_INSIDE_COLOR = (255, 255, 255)
+OBJECT_TEXT_COLOR = (0, 0, 0)
+
+# Debug
+PROCESSING_DEBUG = False

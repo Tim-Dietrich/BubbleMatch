@@ -1,18 +1,20 @@
 import cv2
 import numpy as np
 import os
+from BubbleMatch.Parameters import OBJECT_BORDER_COLOR, OBJECT_INSIDE_COLOR
 
-
-def create_elipse(x, y, height, width, color, image):
+def create_ellipse(image, x, y, height, width, color):
     center_coordinates = (x, y)
-    axes_length = (height, width)
+    axes_length = (width, height)
     angle = 0
     start_angle = 0
     end_angle = 360
     # -1 fills the ellipse
     thickness = -1
+    # print(x, y, height, width, color)
     image = cv2.ellipse(image, center_coordinates, axes_length, angle, start_angle, end_angle, color, thickness)
     return image
+
 
 # testing!!!
 def create_triangle(x, y, height, width, color, image):
@@ -30,6 +32,19 @@ def create_triangle(x, y, height, width, color, image):
     return image
 
 
+def create_square(image, x_min, x_max, y_min, y_max, color):
+    image = cv2.rectangle(image, (x_min, y_min), (x_max, y_max), color, -1)
+    return image
+
+
+def create_polygon(image, vertices, color, is_outline, thickness):
+    if color == OBJECT_BORDER_COLOR:
+        image = cv2.polylines(image, [vertices], True, color, thickness)
+    else:
+        image = cv2.fillPoly(image, [vertices], color)
+    return image
+
+
 def test_bubble():
     assert os.path.exists(r'../files/sample.jpg')
     path = r'../files/sample.jpg'
@@ -42,8 +57,8 @@ def test_bubble():
 
     window_name = 'Sample Image'
 
-    image = create_elipse(500, 500, 205, 105, (0, 0, 0), image)
-    image = create_elipse(500, 500, 200, 100, (255, 255, 255), image)
+    image = create_ellipse(image, 500, 500, 205, 105, (0, 0, 0))
+    image = create_ellipse(image, 500, 500, 200, 100, (255, 255, 255))
 
     image = create_triangle(500, 500, 100, 100, (0, 255, 0), image)
 
